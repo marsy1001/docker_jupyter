@@ -1,18 +1,27 @@
 version: '3'
 services:
   jupyterlab:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile_jupyterlab
     image: jupyterlab-img
     container_name: jupyterlab-container
     working_dir: /work
     volumes:
       - ./work:/work
-      - ./app:/app
     ports:
       - "8888:8888"
-      - "8000:8000"
     command:
       jupyter-lab --ip 0.0.0.0 --allow-root -b localhost
-      
-      
-      
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile_api
+    container_name: api-container
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    command:
+      uvicorn main:app --reload --host 0.0.0.0
